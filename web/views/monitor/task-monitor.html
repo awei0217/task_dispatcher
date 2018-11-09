@@ -1,0 +1,66 @@
+
+
+<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+<center>
+    <div id="main" style="width: 800px;height:400px;"></div>
+</center>
+<script type="text/javascript">
+    var myChart = echarts.init(document.getElementById('main'));
+    option = {
+        color: ['#3398DB'],
+        tooltip : {
+            trigger: 'item',
+            axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+            }
+        },
+        grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+        },
+        xAxis : [
+            {
+                type : 'category',
+                data: ['总任务', '执行中任务', '定时任务', '手动任务'],
+                axisTick: {
+                    alignWithLabel: true
+                }
+            }
+        ],
+        yAxis : [
+            {
+                type : 'value'
+            }
+        ],
+        series : [
+            {
+                name:'数量:',
+                type:'bar',
+                barWidth: '20%',
+                data:[10, 52, 200, 334]
+            }
+        ]
+    };
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option);
+
+    var $
+    layui.use(['jquery'], function () {
+        $=layui.jquery
+    })
+    function findTaskMonitor() {
+        $.ajax({
+            type:'POST',
+            url: '/monitor/find/task/monitor/info',
+            dataType: 'json',
+            success: function (data) {
+                option.series[0].data = data.count
+                myChart.setOption(option)
+            }
+        });
+    }
+    findTaskMonitor()
+    window.setInterval("findTaskMonitor()",12000)
+</script>

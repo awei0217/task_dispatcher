@@ -1,0 +1,292 @@
+<form class="layui-form"  method="POST">
+
+    <div class="layui-row" style="padding-top: 10px">
+        <div class="layui-form-item">
+
+            <input type="hidden" id="taskId" value="{{.Id}}">
+            <div class="layui-col-lg4">
+                <label class="layui-form-label">任务名称</label>
+                <div class="layui-input-block">
+                    <input type="text" id="taskName" name="taskName" autocomplete="off" class="layui-input" value="{{.Name}}">
+                </div>
+            </div>
+            <div class="layui-col-lg4">
+                <label class="layui-form-label">任务分组</label>
+                <div class="layui-input-block">
+                    <select name="groupNo" id="groupNo">
+                    {{if eq .GroupNo "1"}}
+                        <option value="1" selected="selected">仓储计费任务</option>
+                        <option value="2">TC计费任务</option>
+                        <option value="3">大件计费任务</option>
+                    {{end}}
+                    {{if eq .GroupNo "2"}}
+                        <option value="1" >仓储计费任务</option>
+                        <option value="2" selected="selected">TC计费任务</option>
+                        <option value="3">大件计费任务</option>
+                    {{end}}
+                    {{if eq .GroupNo "3"}}
+                        <option value="1">仓储计费任务</option>
+                        <option value="2">TC计费任务</option>
+                        <option value="3" selected="selected">大件计费任务</option>
+                    {{end}}
+
+                    </select>
+                </div>
+            </div>
+            <div class="layui-col-lg4">
+                <label class="layui-form-label">并发个数</label>
+                <div class="layui-input-block">
+                    <input type="text" id="concurrencyNum" name="concurrencyNum" autocomplete="off" class="layui-input" value="{{.ConcurrencyNum}}">
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <div class="layui-col-lg4">
+                <label class="layui-form-label">任务类型</label>
+                <div class="layui-input-block">
+                    <select name="taskType" id="taskType">
+                        {{if eq .TaskType 1}}
+                            <option value="1" selected="selected">定时任务</option>
+                            <option value="2">手动任务</option>
+                        {{end}}
+
+                        {{if eq .TaskType 2}}
+                            <option value="1">定时任务</option>
+                            <option value="2" selected="selected">手动任务</option>
+                        {{end}}
+                    </select>
+                </div>
+            </div>
+
+            <div class="layui-col-lg4">
+                <label class="layui-form-label">初始状态</label>
+                <div class="layui-input-block">
+                    <select name="status" id="status">
+                    {{if eq .Status 1}}
+                        <option value="1" selected="selected">启动</option>
+                        <option value="2">停止</option>
+                        <option value="3">默认</option>
+                    {{end}}
+
+                    {{if eq .Status 2}}
+                        <option value="1">启动</option>
+                        <option value="2" selected="selected">停止</option>
+                        <option value="3">默认</option>
+                    {{end}}
+                    {{if eq .Status 3}}
+                        <option value="1">启动</option>
+                        <option value="2">停止</option>
+                        <option value="3" selected="selected">默认</option>
+                    {{end}}
+                    </select>
+                </div>
+            </div>
+
+            <div class="layui-col-lg4">
+                <label class="layui-form-label">CRON</label>
+                <div class="layui-input-block">
+                    <input type="text" id="cron" name="cron" autocomplete="off" class="layui-input" value="{{.Cron}}">
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-col-lg4">
+                <label class="layui-form-label">是否写日志</label>
+                <div class="layui-input-block">
+                    <select name="isRecordLog" id="isRecordLog">
+                    {{if eq .IsRecordLog 0}}
+                        <option value="0" selected="selected">否</option>
+                        <option value="1">是</option>
+                    {{end}}
+
+                    {{if eq .IsRecordLog 1}}
+                        <option value="0">否</option>
+                        <option value="1" selected="selected">是</option>
+                    {{end}}
+                    </select>
+                </div>
+            </div>
+            <div class="layui-col-lg4">
+                <label class="layui-form-label">负责人邮箱</label>
+                <div class="layui-input-block">
+                    <input type="text" id="mail" name="mail" autocomplete="off" class="layui-input" value="{{.Mail}}">
+                </div>
+            </div>
+
+            <div class="layui-col-lg4">
+                <label class="layui-form-label">任务描述</label>
+                <div class="layui-input-block">
+                    <input type="text" id="description" name="description" autocomplete="off" class="layui-input" value="{{.Description}}">
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-col-lg12">
+                <label class="layui-form-label">任务参数</label>
+                <div class="layui-input-block">
+                    <input type="text" id="param" name="param" autocomplete="off" class="layui-input" value="{{.Param}}">
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-col-lg12">
+                <label class="layui-form-label">任务URL</label>
+                <div class="layui-input-block">
+                    <input type="text" id="url" name="url" autocomplete="off" class="layui-input" value="{{.Url}}">
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <div class="layui-col-lg4">
+                <label class="layui-form-label">是否分区</label>
+                <div class="layui-input-block">
+                    <select name="isRegion" id="isRegion">
+                    {{if eq .IsRegion 1}}
+                        <option value="1" selected="selected">否</option>
+                        <option value="2">是</option>
+                    {{end}}
+
+                    {{if eq .IsRegion 2}}
+                        <option value="1">否</option>
+                        <option value="2" selected="selected">是</option>
+                    {{end}}
+                    </select>
+                </div>
+            </div>
+            <div class="layui-col-lg4">
+                <label class="layui-form-label">请求方式</label>
+                <div class="layui-input-block">
+                    <select name="requestMethod" id="requestMethod">
+                    {{if eq .RequestMethod 1}}
+                        <option value="1" selected="selected">POST</option>
+                        <option value="2">GET</option>
+                    {{end}}
+
+                    {{if eq .RequestMethod 2}}
+                        <option value="1">POST</option>
+                        <option value="2" selected="selected">GET</option>
+                    {{end}}
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<center>
+    <center>
+        <div class="layui-form-item">
+            <div class="layui-input-block" style="padding-top: 30px">
+                <button class="layui-btn layui-btn-sm" id="updateSubmitTask">立即提交</button>
+            </div>
+        </div>
+    </center>
+</center>
+<script>
+    layui.use(['table', 'form', 'layer', 'laytpl', 'element', 'util', 'jquery'], function () {
+        var layer = layui.layer, table = layui.table, form = layui.form, $ = layui.jquery, laytpl = layui.laytpl
+        form.render();
+        //添加
+        layui.$('#updateSubmitTask').on('click', function() {
+            var taskType = $("#taskType").val()
+            var status = $("#status").val()
+            if (taskType == 2 && status != 3){
+                layer.msg("手动任务请选择默认状态")
+                return
+            }
+            var taskType = $("#taskType").val()
+            var status = $("#status").val()
+            var taskName = $("#taskName").val()
+            var concurrencyNum = $("#concurrencyNum").val()
+            var cron = $("#cron").val()
+            var url = $("#url").val()
+            var mail = $("#mail").val()
+            var description = $("#description").val()
+
+            var pattern = /(^[1-4][0-9]$)|(^50&)|(^[1-9]$)$/
+            if(!pattern.test(concurrencyNum)){
+                layer.msg("并发数量只能在只能在1-49")
+                return false
+            }
+
+            if (taskType == 2 && status != 3){
+                layer.msg("手动任务请选择默认状态")
+                return
+            }
+            if (taskType == 1 && status == 3){
+                layer.msg("定时任务不能选择默认状态")
+                return
+            }
+            if (taskName == ""){
+                layer.msg("任务名称不能为空")
+                return
+            }
+            if (concurrencyNum == ""){
+                layer.msg("并发数量不能为空")
+                return
+            }
+            if (taskType == 1 && cron == ""){
+                layer.msg("定时任务cron表达式必填")
+                return
+            }
+            if (taskType == 2 && cron != ""){
+                layer.msg("手动任务请不要填写cron表达式")
+                return
+            }
+            if (url == ""){
+                layer.msg("url必填")
+                return
+            }
+            if (mail == ""){
+                layer.msg("邮箱必填")
+                return
+            }
+            if (description == ""){
+                layer.msg("任务描述必填")
+                return
+            }
+
+            if (taskType == 2 && concurrencyNum != 1){
+                layer.msg("手动任务并发数量只能为1")
+                return
+            }
+            layui.$.ajax({
+                url: "/task/update/task",
+                type: "post",
+                dataType:"json",
+                data: {
+                    id:$("#taskId").val(),
+                    name: taskName,
+                    groupNo :$("#groupNo").val(),
+                    concurrencyNum:concurrencyNum,
+                    taskType:taskType,
+                    status:status,
+                    cron:cron,
+                    param:$("#param").val(),
+                    url:url,
+                    mail:mail,
+                    description:description,
+                    isRecordLog:$("#isRecordLog").val(),
+                    isRegion:$("#isRegion").val(),
+                    requestMethod:$("#requestMethod").val(),
+                },
+                success: function (data) {
+                    layer.msg(data.message);
+                },
+                error: function () {
+                    layer.msg("操作失败");
+                }
+            });
+        });
+    });
+</script>
+
+
+
+
+
+
+
+

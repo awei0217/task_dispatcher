@@ -1,0 +1,71 @@
+
+
+
+
+
+<fieldset class="layui-elem-field" style="margin-top: 20px">
+    <div class="layui-field-box layui-form">
+        <table class="layui-table"  lay-size="sm" lay-filter="registerCenterInfoTable">
+            <thead>
+                <tr>
+                    <th lay-data="{field:'ip'}">IP</th>
+                    <th lay-data="{field:'isDeathName'}">是否死亡</th>
+                    <th lay-data="{field:'taskSliceCollection'}">任务分片集合</th>
+                    <th lay-data="{field:'registerTime'}">注册时间</th>
+                    <th lay-data="{field:'updateTime'}">更新时间</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</fieldset>
+
+<script>
+    //加载列表的后端 url
+    var getListUrl = '/register/center/find/register/center/list';
+    //对于任意一个 table，按照官方的说法，有三种不同的初始化渲染方式，不多介绍，而这里使用的方式姑且看做第三种：转换静态表格 方式
+    //转换静态表格方式，自然首先需要有一个已经存在的表格，然后再通过 js 方式转化为 Layui 表格
+    //无论哪种方式的 Layui table 初始化自然需要配置项
+    //通过转化的方式初始化 Layui table，配置项部分可以在 源table中，部分在js中，源 table 的源代码上文已经给出，下面给出一个示例的 js 中的配置项
+    var tableOptions = {
+        url: getListUrl, //请求地址
+        method: 'POST', //方式
+        id: 'registerCenterInfoTableId',
+        even: true,
+        page: true, //是否分页
+        limit: 10, //是否分页
+        where: {
+            ip: layui.$("#ip").val(),
+            isDeath: layui.$("#isDeath").val(),
+        }, //请求后端接口的条件，该处就是条件错误点，按照官方给出的代码示例，原先写成了 where: { key : { type: "all" } }，结果并不是我想的那样，如此写，key 将是后端的一个类作为参数，里面有 type 属性，如果误以为 key 是 Layui 提供的格式，那就大错特错了
+        response: { //定义后端 json 格式，详细参见官方文档
+            statusName: 'code', //状态字段名称
+            statusCode: '200', //状态字段成功值
+            msgName: 'message', //消息字段
+            countName: 'total', //总数字段
+            dataName: 'data' //数据字段
+        }
+    };
+
+    //
+    layui.use(['table', 'form', 'layer', 'laytpl', 'element', 'util', 'jquery'], function () {
+        var layer = layui.layer, table = layui.table, form = layui.form, $ = layui.jquery, laytpl = layui.laytpl
+
+        //表初始化
+        var createTable = function () {
+            table.init('registerCenterInfoTable', tableOptions);// 第一个字段为：table元素中的 lay-filter的值
+        };
+        //表刷新方法
+        var reloadTable = function (item) {
+            table.reload("registerCenterInfoTableId", item);
+        };
+        //表初始化
+        createTable();
+    });
+</script>
+
+
+
+
+
+
+

@@ -1,0 +1,244 @@
+
+<form class="layui-form" action="">
+
+    <div class="layui-row" style="padding-top: 10px">
+        <div class="layui-col-lg4">
+            <label class="layui-form-label">任务编号</label>
+            <div class="layui-input-block">
+                <input type="text" id="taskNo" name="taskNo" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-col-lg4">
+            <label class="layui-form-label">任务名称</label>
+            <div class="layui-input-block">
+                <input type="text" id="taskName" name="taskName" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-col-lg4">
+            <label class="layui-form-label">分组编号</label>
+            <div class="layui-input-block">
+                <select name="groupNo" id="groupNo" name="groupNo">
+                    <option value=""></option>
+                    <option value="1">仓储计费任务</option>
+                    <option value="2">TC计费任务</option>
+                    <option value="3">大件计费任务</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <center>
+        <blockquote style="padding-top: 10px">
+            <a href="/task/add/task/page" class="layui-btn layui-btn-sm">
+                <i class="layui-icon">&#xe608;</i> 添加
+            </a>
+            <a href="javascript:;" class="layui-btn layui-btn-sm" id="search-task">
+                <i class="layui-icon">&#xe615;</i> 查询
+            </a>
+            <a href="javascript:;" class="layui-btn layui-btn-sm" id="start-task">
+                <i class="layui-icon">&#xe615;</i> 启动
+            </a>
+            <a href="javascript:;" class="layui-btn layui-btn-sm" id="stop-task">
+                <i class="layui-icon">&#xe615;</i> 停止
+            </a>
+            <a href="javascript:;" class="layui-btn layui-btn-sm" id="delete-task">
+                <i class="layui-icon">&#xe615;</i> 删除
+            </a>
+            <a href="javascript:;" class="layui-btn layui-btn-sm" id="update-task">
+                <i class="layui-icon">&#xe615;</i> 修改
+            </a>
+        </blockquote>
+    </center>
+</form>
+
+
+<fieldset class="layui-elem-field" style="margin-top: 20px">
+    <div class="layui-field-box layui-form">
+        <table class="layui-table" lay-filter="taskInfoTable" lay-size="sm">
+            <thead>
+            <tr>
+                <th lay-data="{type:'checkbox',fixed: 'left'}"></th>
+                <th lay-data="{field:'name'}">任务名称</th>
+                <th lay-data="{field:'groupNameUI'}">分组名称</th>
+                <th lay-data="{field:'cron'}">cron</th>
+                <th lay-data="{field:'taskTypeNameUI'}">任务类型</th>
+                <th lay-data="{field:'url'}">URL</th>
+                <th lay-data="{field:'param'}">任务参数</th>
+                <th lay-data="{field:'taskSlice'}">任务分片</th>
+                <th lay-data="{field:'concurrencyNum'}">并发数量</th>
+                <th lay-data="{field:'statusNameUI'}">状态</th>
+                <th lay-data="{field:'taskIsActivityNameUI'}">是否运行中</th>
+                <th lay-data="{field:'isRegionNameUI'}">是否分区</th>
+            </tr>
+            </thead>
+        </table>
+    </div>
+</fieldset>
+<script>
+    (function () {
+        //加载列表的后端 url
+        var getListUrl = '/task/find/task/list';
+
+        var tableOptions = {
+            url: getListUrl, //请求地址
+            method: 'POST', //方式
+            id:'taskInfoTableId',
+            even:true,
+            page: true, //是否分页
+            limit: 10, //是否分页
+            where: {
+                taskNo: layui.$("#taskNo").val(),
+                name: layui.$("#taskName").val(),
+                groupNo: layui.$("#groupNo").val()
+            }, //请求后端接口的条件，该处就是条件错误点，按照官方给出的代码示例，原先写成了 where: { key : { type: "all" } }，结果并不是我想的那样，如此写，key 将是后端的一个类作为参数，里面有 type 属性，如果误以为 key 是 Layui 提供的格式，那就大错特错了
+            response: { //定义后端 json 格式，详细参见官方文档
+                statusName: 'code', //状态字段名称
+                statusCode: '200', //状态字段成功值
+                msgName: 'message', //消息字段
+                countName: 'total', //总数字段
+                dataName: 'data' //数据字段
+            }
+        };
+        //
+        layui.use(['table','form', 'layer','laytpl','element','util','jquery'], function () {
+            var layer = layui.layer, table = layui.table, form =layui.form,$=layui.jquery,laytpl = layui.laytpl
+            form.render();
+            //表初始化
+            var createTable = function () {
+                table.init('taskInfoTable', tableOptions);// 第一个字段为：table元素中的 lay-filter的值
+            };
+            //表刷新方法
+            var reloadTable = function (item) {
+                table.reload("taskInfoTableId",item);
+            };
+            //表初始化
+            createTable();
+
+            //查询
+            layui.$('#search-task').on('click', function() {
+                var condition ={
+                    taskNo: layui.$("#taskNo").val(),
+                    name: layui.$("#taskName").val(),
+                    groupNo: layui.$("#groupNo").val()
+                };
+                tableOptions.where=condition;
+                reloadTable(tableOptions)
+            });
+            //启动
+            layui.$('#start-task').on('click', function() {
+                var checkStatus = table.checkStatus('taskInfoTableId'); //test即为基础参数id对应的值
+                taskData = checkStatus.data;
+                if (taskData.length == 0){
+                    layer.msg("请选择需要操作的数据");
+                    return
+                }
+                for (var i=0;i<taskData.length;i++){
+                    if (taskData[i].isActivity == 1 &&
+                            (taskData[i].isActivity == 1 || taskData[i].status == 1)){
+                        layer.msg("请选择不在运行中的任务")
+                        return
+                    }
+                }
+                var ids = '';
+                for(var i= 0;i< taskData.length;i++){
+                    ids = ids + taskData[i].id +","
+                }
+
+                $.ajax({
+                    type:'POST',
+                    url:'/task/execute/timing/task',
+                    data:{
+                        "ids": ids.substr(0,ids.length-1),
+                    },
+                    dataType:'text',
+                    success:function (data) {
+                        layer.msg(data)
+                        reloadTable(tableOptions)
+                    }
+                });
+            });
+            //停止
+            layui.$('#stop-task').on('click', function() {
+                var checkStatus = table.checkStatus('taskInfoTableId'); //test即为基础参数id对应的值
+                taskData = checkStatus.data;
+                if (taskData.length == 0){
+                    layer.msg("请选择需要操作的数据");
+                    return
+                }
+                for (var i=0;i<taskData.length;i++){
+                    if(taskData[i].taskType == 2){
+                        layer.msg("手动任务不需要停止")
+                        return
+                    }
+                    if (taskData[i].isActivity == 0 ){
+                        // 任务没有执行，所以不需要停止
+                        layer.msg("任务已经停止，请不要重复点击")
+                        return
+                    }
+                }
+                var ids = '';
+                for(var i= 0;i< taskData.length;i++){
+                    ids = ids + taskData[i].id +","
+                }
+                $.ajax({
+                    type:'POST',
+                    url: '/task/execute/stop/task',
+                    data: {
+                        "ids": ids.substr(0,ids.length-1),
+                    },
+                    dataType: 'text',
+                    success: function (data) {
+                        layer.msg(data)
+                        reloadTable(tableOptions)
+                    }
+                });
+            });
+            //删除
+            layui.$('#delete-task').on('click', function() {
+                var checkStatus = table.checkStatus('taskInfoTableId'); //test即为基础参数id对应的值
+                taskData = checkStatus.data;
+                if (checkStatus.data.length > 1){
+                    layer.msg("请选择一行数据");
+                    return
+                }
+                if (taskData[0].isActivity == 1 ){
+                    // 任务没有执行，所以不需要停止
+                    layer.msg("任务正在运行,不能删除,请先停止任务")
+                    return
+                }
+                $.ajax({
+                    type:'POST',
+                    url: '/task/delete/task',
+                    data: {
+                        "id": taskData[0].id,
+                    },
+                    dataType: 'json',
+                    success: function (data) {
+                        layer.msg(data.message);
+                        reloadTable(tableOptions)
+                    }
+                });
+            });
+
+            //修改
+            layui.$('#update-task').on('click', function() {
+                var checkStatus = table.checkStatus('taskInfoTableId'); //test即为基础参数id对应的值
+                taskData = checkStatus.data;
+                if (checkStatus.data.length > 1){
+                    layer.msg("请选择一行数据");
+                    return
+                }
+                taskData[0].isActivity
+                window.location.href = "/task/update/task/page?id="+taskData[0].id
+            });
+
+        });
+    })();
+</script>
+
+
+
+
+
+
+

@@ -1,0 +1,27 @@
+.layui-layout-admin .layui-footer {
+    position: fixed;
+    left: 0px;
+    right: 0;
+    bottom: 0;
+    height: 44px;
+    line-height: 44px;
+    padding: 0 15px;
+    background-color: #eee;
+}
+
+.layui-layout-admin .layui-body {
+    top: 80px;
+    bottom: 44px;
+}
+.layui-body {
+    position: absolute;
+    left: 200px;
+    right: 200px;
+    top: 0;
+    bottom: 0;
+    z-index: 998;
+    width: auto;
+    overflow: hidden;
+    overflow-y: auto;
+    box-sizing: border-box;
+}

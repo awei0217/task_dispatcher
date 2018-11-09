@@ -1,0 +1,227 @@
+<form class="layui-form"  method="POST">
+
+    <div class="layui-row" style="padding-top: 10px">
+        <div class="layui-form-item">
+            <div class="layui-col-lg4">
+                <label class="layui-form-label">任务名称</label>
+                <div class="layui-input-block">
+                    <input type="text" id="taskName" name="taskName" class="layui-input" required placeholder="必填">
+                </div>
+            </div>
+            <div class="layui-col-lg4">
+                <label class="layui-form-label">任务分组</label>
+                <div class="layui-input-block">
+                    <select name="groupNo" id="groupNo">
+                        <option value="1">任务1</option>
+                        <option value="2">任务2</option>
+                        <option value="3">任务3</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-col-lg4">
+                <label class="layui-form-label">并发个数</label>
+                <div class="layui-input-block">
+                    <input type="text" id="concurrencyNum" name="concurrencyNum" autocomplete="off" class="layui-input" placeholder="并发数量最大为49">
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <div class="layui-col-lg4">
+                <label class="layui-form-label">任务类型</label>
+                <div class="layui-input-block">
+                    <select name="taskType" id="taskType">
+                        <option value="1">定时任务</option>
+                        <option value="2">手动任务</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="layui-col-lg4">
+                <label class="layui-form-label">初始状态</label>
+                <div class="layui-input-block">
+                    <select name="status" id="status">
+                        <option value="1">启动</option>
+                        <option value="2">停止</option>
+                        <option value="3">默认</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="layui-col-lg4">
+                <label class="layui-form-label">CRON</label>
+                <div class="layui-input-block">
+                    <input type="text" id="cron" name="cron" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+
+            <div class="layui-col-lg4">
+                <label class="layui-form-label">是否写日志</label>
+                <div class="layui-input-block">
+                    <select name="isRecordLog" id="isRecordLog">
+                        <option value="0">否</option>
+                        <option value="1">是</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="layui-col-lg4">
+                <label class="layui-form-label">负责人邮箱</label>
+                <div class="layui-input-block">
+                    <input type="text" id="mail" name="mail" autocomplete="off" class="layui-input" placeholder="必填">
+                </div>
+            </div>
+            <div class="layui-col-lg4">
+                <label class="layui-form-label">任务描述</label>
+                <div class="layui-input-block">
+                    <input type="text" id="description" name="description" autocomplete="off" class="layui-input" placeholder="必填">
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-col-lg12">
+                <label class="layui-form-label">任务参数</label>
+                <div class="layui-input-block">
+                    <input type="text" id="param" name="param" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-col-lg12">
+                <label class="layui-form-label">任务URL</label>
+                <div class="layui-input-block">
+                    <input type="text" id="url" name="url" autocomplete="off" class="layui-input" placeholder="必填">
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <div class="layui-col-lg4">
+                <label class="layui-form-label">是否分区</label>
+                <div class="layui-input-block">
+                    <select name="isRegion" id="isRegion">
+                        <option value="1">否</option>
+                        <option value="2">是</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="layui-col-lg4">
+                <label class="layui-form-label">请求方式</label>
+                <div class="layui-input-block">
+                    <select name="requestMethod" id="requestMethod">
+                        <option value="1">POST</option>
+                        <option value="2">GET</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</form>
+<center>
+    <div class="layui-form-item">
+        <div class="layui-input-block" style="padding-top: 30px">
+            <button class="layui-btn layui-btn-sm" id="submitTask">立即提交</button>
+        </div>
+    </div>
+</center>
+
+<script>
+
+    layui.use(['table', 'form', 'layer', 'laytpl', 'element', 'util', 'jquery'], function () {
+        var layer = layui.layer, table = layui.table, form = layui.form, $ = layui.jquery, laytpl = layui.laytpl
+        form.render();
+        //添加
+        layui.$('#submitTask').on('click', function() {
+            var taskType = $("#taskType").val()
+            var status = $("#status").val()
+            var taskName = $("#taskName").val()
+            var concurrencyNum = $("#concurrencyNum").val()
+            var cron = $("#cron").val()
+            var url = $("#url").val()
+            var mail = $("#mail").val()
+            var description = $("#description").val()
+
+            if (taskType == 2 && status != 3){
+                layer.msg("手动任务请选择默认状态")
+                return
+            }
+            if (taskType == 1 && status == 3){
+                layer.msg("定时任务不能选择默认状态")
+                return
+            }
+            if (taskName == ""){
+                layer.msg("任务名称不能为空")
+                return
+            }
+            if (concurrencyNum == ""){
+                layer.msg("并发数量不能为空")
+                return
+            }
+            var pattern = /(^[1-4][0-9]$)|(^50&)|(^[1-9]$)$/
+            if(!pattern.test(concurrencyNum)){
+                layer.msg("并发数量只能在只能在1-49")
+                return false
+            }
+            if (taskType == 1 && cron == ""){
+                layer.msg("定时任务cron表达式必填")
+                return
+            }
+            if (taskType == 2 && cron != ""){
+                layer.msg("手动任务请不要填写cron表达式")
+                return
+            }
+            if (url == ""){
+                layer.msg("url必填")
+                return
+            }
+            if (mail == ""){
+                layer.msg("邮箱必填")
+                return
+            }
+            if (description == ""){
+                layer.msg("任务描述必填")
+                return
+            }
+
+            layui.$.ajax({
+                url: "/task/add/task",
+                type: "post",
+                dataType:"json",
+                data: {
+                    name: taskName,
+                    groupNo :$("#groupNo").val(),
+                    concurrencyNum:concurrencyNum,
+                    taskType:taskType,
+                    status:status,
+                    isRecordLog:$("#isRecordLog").val(),
+                    cron:cron,
+                    param:$("#param").val(),
+                    url:url,
+                    mail:mail,
+                    description:description,
+                    isRegion:$("#isRegion").val(),
+                    requestMethod:$("#requestMethod").val(),
+                },
+                success: function (data) {
+                    layer.msg(data.message);
+                },
+                error: function () {
+                    layer.msg("操作失败");
+                }
+            });
+        });
+    });
+
+</script>
+
+
+
+
+
+
+
+

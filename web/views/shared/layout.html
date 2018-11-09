@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>统一任务调度平台</title>
+    <link rel="stylesheet" href="/public/layui/css/layui.css">
+    <link rel="stylesheet" href="/public/layui/app.css">
+    <script src="/public/layui/layui.all.js"></script>
+    <script src="/public/echarts/echarts.js"></script>
+
+</head>
+
+<body class="layui-layout-body">
+
+    <div class="layui-layout layui-layout-admin">
+
+        <!-- =================================================================================================== -->
+        <div class="layui-header">
+            <div class="layui-logo">统一任务调度平台</div>
+            <!-- 头部区域（可配合layui已有的水平导航） -->
+            <ul class="layui-nav layui-layout-left">
+                <li class="layui-nav-item"><a href="/">公告</a></li>
+                <li class="layui-nav-item"><a href="/register/center/register/center/list/page">注册中心</a></li>
+                <li class="layui-nav-item"><a href="/task/task/list/page">任务列表</a></li>
+                <li class="layui-nav-item"><a href="/execute/record/task/execute/record/list/page">任务执行信息</a></li>
+                <li class="layui-nav-item">
+                    <a href="javascript:;">监控</a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="/monitor/performance/monitor/page">性能监控</a></dd>
+                        <dd><a href="/monitor/task/monitor/page">任务监控</a></dd>
+                    </dl>
+                </li>
+            </ul>
+            <ul class="layui-nav layui-layout-right">
+                <li class="layui-nav-item">
+                    <a href="javascript:;">
+                        <img src="http://t.cn/RCzsdCq" class="layui-nav-img">admin
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- =================================================================================================== -->
+        <div class="layui-body">
+            <!-- 内容主体区域 -->
+
+
+            {{ yield }}
+
+
+        </div>
+
+        <!-- =================================================================================================== -->
+        <div class="layui-footer">
+            © www.yfgjk.com - 底部固定区域
+        </div>
+    </div>
+
+    <script src="/public/layui/layui.all.js"></script>
+    <script>
+        //JavaScript代码区域
+        layui.use(['element','laytpl'], function(){
+            var element = layui.element;
+        });
+    </script>
+</body>
+
+</html>

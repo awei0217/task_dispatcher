@@ -1,0 +1,123 @@
+
+<form class="layui-form" action="">
+
+    <div class="layui-row" style="padding-top: 10px">
+        <div class="layui-col-lg4">
+            <label class="layui-form-label">任务编号</label>
+            <div class="layui-input-block">
+                <input type="text" id="taskNo" name="taskNo" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-col-lg4">
+            <label class="layui-form-label">分组编号</label>
+            <div class="layui-input-block">
+                <select name="groupNo" id="groupNo" name="groupNo">
+                    <option value=""></option>
+                    <option value="1">仓储计费任务</option>
+                    <option value="2">TC计费任务</option>
+                    <option value="3">大件计费任务</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-col-lg4">
+            <label class="layui-form-label">状态</label>
+            <div class="layui-input-block">
+                <select name="groupNo" id="status">
+                    <option value=""></option>
+                    <option value="1">成功</option>
+                    <option value="2">失败</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <center>
+        <blockquote style="padding-top: 10px">
+            <a href="javascript:;" class="layui-btn layui-btn-sm" id="search-task-execute-record">
+                <i class="layui-icon">&#xe615;</i> 查询
+            </a>
+        </blockquote>
+    </center>
+</form>
+
+
+<fieldset class="layui-elem-field" style="margin-top: 20px">
+    <div class="layui-field-box layui-form">
+        <table class="layui-table" lay-filter="taskExecuteRecordInfoTable" lay-size="sm">
+            <thead>
+            <tr>
+                <th lay-data="{field:'taskNo'}">任务编号</th>
+                <th lay-data="{field:'taskName'}">任务名称</th>
+                <th lay-data="{field:'groupNo'}">分组编号</th>
+                <th lay-data="{field:'statusNameUI'}">状态</th>
+                <th lay-data="{field:'errorMsg'}">日志信息</th>
+                <th lay-data="{field:'createTime'}">创建时间</th>
+            </tr>
+            </thead>
+        </table>
+    </div>
+</fieldset>
+<script>
+    (function () {
+        //加载列表的后端 url
+        var getListUrl = '/execute/record/find/task/execute/record/list';
+
+        var tableOptions = {
+            url: getListUrl, //请求地址
+            method: 'POST', //方式
+            id:'taskExecuteRecordInfoTableId',
+            even:true,
+            page: true, //是否分页
+            limit: 10, //是否分页
+            where: {
+                taskNo: layui.$("#taskNo").val(),
+                status: layui.$("#status").val(),
+                groupNo: layui.$("#groupNo").val()
+            }, //请求后端接口的条件，该处就是条件错误点，按照官方给出的代码示例，原先写成了 where: { key : { type: "all" } }，结果并不是我想的那样，如此写，key 将是后端的一个类作为参数，里面有 type 属性，如果误以为 key 是 Layui 提供的格式，那就大错特错了
+            response: { //定义后端 json 格式，详细参见官方文档
+                statusName: 'code', //状态字段名称
+                statusCode: '200', //状态字段成功值
+                msgName: 'message', //消息字段
+                countName: 'total', //总数字段
+                dataName: 'data' //数据字段
+            }
+        };
+        //
+        layui.use(['table','form', 'layer','laytpl','element','util','jquery'], function () {
+            var layer = layui.layer, table = layui.table, form =layui.form,$=layui.jquery,laytpl = layui.laytpl
+            form.render();
+            //表初始化
+            var createTable = function () {
+                table.init('taskExecuteRecordInfoTable', tableOptions);// 第一个字段为：table元素中的 lay-filter的值
+            };
+            //表刷新方法
+            var reloadTable = function (item) {
+                table.reload("taskExecuteRecordInfoTableId",item);
+            };
+            //表初始化
+            createTable();
+
+            //查询
+            layui.$('#search-task-execute-record').on('click', function() {
+                var condition ={
+                    taskNo: layui.$("#taskNo").val(),
+                    status: layui.$("#status").val(),
+                    groupNo: layui.$("#groupNo").val()
+                };
+                tableOptions.where=condition;
+                reloadTable(tableOptions)
+            });
+
+        });
+    })();
+</script>
+<script type="text/html" id="operation">
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="execute">执行</a>
+</script>
+
+
+
+
+
+
+
