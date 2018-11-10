@@ -4,7 +4,6 @@ import (
 	"testing"
 	"log"
 	"fmt"
-	"."
 	"os"
 	"bufio"
 	"io"
@@ -14,7 +13,7 @@ import (
 func Benchmark_CreateConn(b *testing.B)  {
 
 	for i:=0;i<10000;i++ {
-		config.CreateConn();
+		CreateConn();
 		log.Println(i)
 	}
 

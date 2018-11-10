@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/kataras/iris"
 	"github.com/kataras/iris/mvc"
+	"task_dispatcher/common"
 	"task_dispatcher/net_server"
 	"task_dispatcher/scheduler"
 	"task_dispatcher/web/controller"
@@ -34,7 +35,7 @@ func main() {
 	mvc.New(app.Party("/execute/record")).Handle(new(controller.TaskExecuteRecordController))
 	mvc.New(app.Party("/monitor")).Handle(new(controller.MonitorController))
 	iris.RegisterOnInterrupt(func() {
-		//common.GetLog().Println("程序异常终止")
+		common.GetLog().Println("程序异常终止")
 		net_server.StopServer()
 	})
 	app.Run(

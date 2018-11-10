@@ -2,7 +2,7 @@ package net_server
 
 import (
 	"net"
-	"../common"
+	"task_dispatcher/common"
 	"bufio"
 )
 var tcpListener *net.TCPListener
