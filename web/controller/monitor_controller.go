@@ -122,7 +122,7 @@ func (monitorController *MonitorController)PostFindTaskMonitorInfo(ctx context.C
 	countCron,_ := domain.CountCronTask();
 	// 普通任务
 	countOne,_ := domain.CountOneTask();
-	countSlice := make([]int,4,4)
+	countSlice := make([]int64,4,4)
 	countSlice[0] = count
 	countSlice[1] = countExecuting
 	countSlice[2] = countCron

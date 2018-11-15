@@ -82,10 +82,10 @@ func FindTaskExecuteRecordByTaskNoAndStatus(taskNo, status interface{}) (*[]Task
 func FindTaskExecuteRecordByPage(page *common.Page, taskExecuteRecord *TaskExecuteRecord) (*common.Page, error) {
 	ter := config.Conn.Table("task_execute_record")
 	//查询数据
-	res, err1 := ter.Fields(EXECUTE_RECORD_SELECT_FIELD).Where(func() { taskExecuteRecordWhereCondition(ter, taskExecuteRecord) }).Order("id desc").Offset((page.Page-1) * page.Limit).Limit(page.Limit).Get()
+	res, err1 := ter.Fields(EXECUTE_RECORD_SELECT_FIELD).Where("is_delete",0).Order("id desc").Offset((page.Page-1) * page.Limit).Limit(page.Limit).Get()
 	//查询总数
 	terCount := config.Conn.Table("task_execute_record")
-	count, err2 := terCount.Where(func() {taskExecuteRecordWhereCondition(terCount, taskExecuteRecord)}).Count()
+	count, err2 := terCount.Where("is_delete",0).Count()
 	if err1 != nil {
 
 		return page, err1

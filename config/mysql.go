@@ -6,34 +6,17 @@ import (
 	"task_dispatcher/common"
 )
 
-
-var DbConfig = map[string]interface{}{
-	// Default database configuration
-	"Default": "mysql_dev",
-	// (Connection pool) Max open connections, default value 0 means unlimit.
-	"SetMaxOpenConns": 300,
-	// (Connection pool) Max idle connections, default value is 1.
-	"SetMaxIdleConns": 10,
-
-	// Define the database configuration character "mysql_dev".
-	"Connections": map[string]map[string]string{
-		"mysql_dev": map[string]string{
-			"host":     "127.0.0.1",
-			"username": "root",
-			"password": "root",
-			"port":     "3306",
-			"database": "scheduler",
-			"charset":  "utf8",
-			"protocol": "tcp",
-			"prefix":   "",      // Table prefix
-			"driver":   "mysql", // Database driver(mysql,sqlite,postgres,oracle,mssql)
-		},
-	},
+var dbConfig = &gorose.DbConfigSingle{
+	Driver:          "mysql", // driver: mysql/sqlite/oracle/mssql/postgres
+	EnableQueryLog:  true,    // if enable sql logs
+	SetMaxOpenConns: 5,       // connection pool of max Open connections, default zero
+	SetMaxIdleConns: 1,       // connection pool of max sleep connections
+	Prefix:          "",      // prefix of table
+	Dsn:             "root:root@tcp(127.0.0.1:3306)/scheduler?charset=utf8", // db dsn
 }
-
 var Conn gorose.Connection
 func init()  {
-	connection , err := gorose.Open(DbConfig)
+	connection , err := gorose.Open(dbConfig)
 	if err != nil {
 		common.GetLog().Errorln("初始化数据库报错",err)
 		panic(err)
@@ -42,6 +25,6 @@ func init()  {
 }
 
 func CreateConn() (gorose.Connection)  {
-	connection , _ := gorose.Open(DbConfig)
+	connection , _ := gorose.Open(dbConfig)
 	return *connection
 }

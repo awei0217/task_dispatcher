@@ -123,7 +123,7 @@ func (task *Task) UpdateTask() (int64, error) {
 */
 func FindAllTask(task *Task) (*[]Task, error) {
 	tk := config.Conn.Table("task")
-	res, err := tk.Fields(TASK_SELECT_FIELD).Where(func() { taskWhereCondition(tk, task) }).Get()
+	res, err := tk.Fields(TASK_SELECT_FIELD).Where("is_delete",0).Get()
 	tasks := &[]Task{}
 	err1 := mapstructure.Decode(res, tasks)
 	if err1 != nil {
@@ -139,10 +139,10 @@ func FindAllTask(task *Task) (*[]Task, error) {
 func FindTaskByPage(page *common.Page, task *Task) (*common.Page, error) {
 	tk := config.Conn.Table("task")
 	//查询数据
-	res, err1 := tk.Fields(TASK_SELECT_FIELD).Where(func() { taskWhereCondition(tk, task) }).Offset((page.Page - 1) * page.Limit).Limit(page.Limit).Get()
+	res, err1 := tk.Fields(TASK_SELECT_FIELD).Where("is_delete",0).Offset((page.Page - 1) * page.Limit).Limit(page.Limit).Get()
 	//查询总数
 	tkCount := config.Conn.Table("task")
-	count, err2 := tkCount.Where(func() { taskWhereCondition(tkCount, task) }).Count()
+	count, err2 := tkCount.Where("is_delete",0).Count()
 	if err1 != nil {
 		common.GetLog().Errorln("根据条查询任务记录异常", err1)
 		return page, err1
