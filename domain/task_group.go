@@ -20,7 +20,7 @@ type TaskGroup struct {
 }
 
 /**
-	添加一个任务分组
+添加一个任务分组
 */
 func (tg *TaskGroup) AddTaskGroup() (int64, error) {
 	tg.Id = time.Now().Nanosecond()
@@ -41,7 +41,7 @@ func (tg *TaskGroup) AddTaskGroup() (int64, error) {
 }
 
 /**
-	根据ID更新任务分组
+根据ID更新任务分组
 */
 func (tg *TaskGroup) UpdateTaskGroupById() (int64, error) {
 	tg.UpdateTime = time.Now()

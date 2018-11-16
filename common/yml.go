@@ -5,15 +5,16 @@ import (
 )
 
 var ymlFile *yaml.File
+
 //初始化ymlFile
-func init()  {
-	ymlFile,_ = yaml.ReadFile("./config/task_slice.yml")
+func init() {
+	ymlFile, _ = yaml.ReadFile("./config/task_slice.yml")
 }
 
-func GetYmlFile()(*yaml.File){
-	GetLog().Println("ymlFile",ymlFile)
+func GetYmlFile() *yaml.File {
+	GetLog().Println("ymlFile", ymlFile)
 	if ymlFile == nil {
-		ymlFile,_ = yaml.ReadFile("../config/task_slice.yml")
+		ymlFile, _ = yaml.ReadFile("../config/task_slice.yml")
 	}
 	return ymlFile
 }

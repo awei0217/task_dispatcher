@@ -4,24 +4,25 @@ import (
 	"crypto/tls"
 	"encoding/base64"
 	"errors"
+	"fmt"
 	"net"
 	"net/smtp"
 	"strings"
-	"fmt"
 )
 
 // 邮件配置信息
 const (
 	ADDR     = "smtp.__.com:25"
-	USER     = "sunpengwei"   //发送邮件的邮箱
-	PASSWORD = "-----" //发送邮件邮箱的密码
+	USER     = "sunpengwei" //发送邮件的邮箱
+	PASSWORD = "-----"      //发送邮件邮箱的密码
 	FROM     = "-----"
 )
+
 /**
-	发送邮件实体， to  发给谁， subject 邮件主题 message 邮件内容
- */
+发送邮件实体， to  发给谁， subject 邮件主题 message 邮件内容
+*/
 type Email struct {
-	To string
+	To      string
 	Subject string
 	Message string
 }
@@ -29,9 +30,10 @@ type Email struct {
 type LoginAuth struct {
 	username, password string
 }
+
 /**
-	验证
- */
+验证
+*/
 func NewLoginAuth(username, password string) smtp.Auth {
 	return &LoginAuth{username, password}
 }
@@ -54,7 +56,7 @@ func (a *LoginAuth) Next(fromServer []byte, more bool) ([]byte, error) {
 	return nil, nil
 }
 
-func send(addr,subject string, a smtp.Auth, from string, to []string, msg []byte) error {
+func send(addr, subject string, a smtp.Auth, from string, to []string, msg []byte) error {
 	c, err := smtp.Dial(addr)
 	host, _, _ := net.SplitHostPort(addr)
 	if err != nil {
@@ -113,15 +115,16 @@ func send(addr,subject string, a smtp.Auth, from string, to []string, msg []byte
 	}
 	return c.Quit()
 }
+
 /**
-	发送邮件
- */
-func SendMail(email *Email)  {
+发送邮件
+*/
+func SendMail(email *Email) {
 	auth := NewLoginAuth(USER, PASSWORD)
-	err := send(ADDR,email.Subject,auth,FROM,strings.Split(email.To,","),[]byte(email.Message))
+	err := send(ADDR, email.Subject, auth, FROM, strings.Split(email.To, ","), []byte(email.Message))
 	if err != nil {
-		GetLog().Errorln("发送邮件失败",err)
-	}else{
+		GetLog().Errorln("发送邮件失败", err)
+	} else {
 		GetLog().Infoln("发送邮件成功")
 	}
 

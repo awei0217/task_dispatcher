@@ -1,11 +1,11 @@
 package domain
 
 import (
+	"log"
+	"math/rand"
 	"sync"
 	"testing"
 	"time"
-	"log"
-	"math/rand"
 )
 
 var wg sync.WaitGroup
@@ -59,13 +59,13 @@ func TestTask_AddTask(t *testing.T) {
 	task.Param = ""
 	s := rand.Intn(127)
 
-	log.Println("分片:",s)
+	log.Println("分片:", s)
 }
 
 /*func TestTask_FindAll(t *testing.T) {
 	task.FindAll()
 }*/
 
-func TestTask_FindByTaskSlice(t *testing.T){
-	FindByTaskSlice([]interface{}{1,2})
+func TestTask_FindByTaskSlice(t *testing.T) {
+	FindByTaskSlice([]interface{}{1, 2})
 }

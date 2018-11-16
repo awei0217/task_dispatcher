@@ -2,14 +2,15 @@ package domain
 
 import (
 	"fmt"
-	"task_dispatcher/common"
-	"task_dispatcher/config"
-	"task_dispatcher/enum"
-	"task_dispatcher/net_client"
+	"github.com/gohouse/gorose"
 	"github.com/goinggo/mapstructure"
 	"github.com/kataras/iris/core/errors"
 	"strconv"
 	"strings"
+	"task_dispatcher/common"
+	"task_dispatcher/config"
+	"task_dispatcher/enum"
+	"task_dispatcher/net_client"
 	"time"
 )
 
@@ -211,11 +212,12 @@ func FindRegisterCenterByIp(ip string) (*RegisterCenter, error) {
 func FindRegisterCenterByPage(page *common.Page, rc *RegisterCenter) (*common.Page, error) {
 	rcCon := config.Conn.Table("register_center")
 	//查询数据
-	res, err1 := rcCon.Fields(REGISTE_CENTER_SELECT_FILED).Where("is_delete",0).Offset((page.Page - 1) * page.Limit).Limit(page.Limit).Get()
+	rcWhereCondition(rcCon, rc)
+	res, err1 := rcCon.Fields(REGISTE_CENTER_SELECT_FILED).Offset((page.Page - 1) * page.Limit).Limit(page.Limit).Get()
 	fmt.Println(rcCon.LastSql)
 	//查询总数
 	rcConCount := config.Conn.Table("register_center")
-	count, err2 := rcConCount.Where("is_delete",0).Count()
+	count, err2 := rcConCount.Where("is_delete", 0).Count()
 	if err1 != nil {
 		common.GetLog().Errorln("根据条件查询注册中心记录异常", err1)
 		return page, err1
@@ -299,5 +301,12 @@ func AllNetSendNeedTask() {
 		if err != nil || count == 0 {
 			common.GetLog().Errorln("往目标IP:", rc.Ip, "发送失败", err)
 		}
+	}
+}
+
+func rcWhereCondition(tableName *gorose.Session, rc *RegisterCenter) {
+	tableName.Where("is_delete", 0)
+	if rc.Ip != "" {
+		tableName.Where("ip", rc.Ip)
 	}
 }

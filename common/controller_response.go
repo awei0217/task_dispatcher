@@ -1,10 +1,7 @@
 package common
 
-
-
-
 type ControllerResponse struct {
-	Code    int    `json:"code"`
+	Code int `json:"code"`
 
 	Message string `json:"message"`
 

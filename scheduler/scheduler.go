@@ -1,18 +1,18 @@
 package scheduler
 
 import (
+	"github.com/goinggo/mapstructure"
+	"strings"
+	"task_dispatcher/common"
 	"task_dispatcher/config"
 	"task_dispatcher/domain"
 	"task_dispatcher/task_manager"
-	"github.com/goinggo/mapstructure"
 	"time"
-	"task_dispatcher/common"
-	"strings"
 )
 
 func init() {
 
-	rc,_:=domain.FindRegisterCenterByIp(common.GetIp())
+	rc, _ := domain.FindRegisterCenterByIp(common.GetIp())
 
 	if rc.TaskSliceCollection == "" {
 		return
@@ -21,8 +21,8 @@ func init() {
 	res, err := config.Conn.Table("task").
 		Fields(domain.TASK_SELECT_FIELD).
 		Where("status", 1).
-		Where("task_type",1).
-		Where("task_slice","in",newSls).
+		Where("task_type", 1).
+		Where("task_slice", "in", newSls).
 		Get()
 	if err == nil {
 		tasks := &[]domain.Task{}
@@ -39,7 +39,7 @@ func StartScheduler() {
 
 func ForFindExecuteTask() {
 	for {
-		rc,_:=domain.FindRegisterCenterByIp(common.GetIp())
+		rc, _ := domain.FindRegisterCenterByIp(common.GetIp())
 		if rc == nil {
 			time.Sleep(10 * time.Second)
 			continue
@@ -51,10 +51,10 @@ func ForFindExecuteTask() {
 		newSls := getTaskSlice(rc.TaskSliceCollection)
 		res, err := config.Conn.Table("task").
 			Fields(domain.TASK_SELECT_FIELD).
-			Where("status", 1). // 启动状态
-			Where("task_type",1). // 定时任务
+			Where("status", 1).      // 启动状态
+			Where("task_type", 1).   // 定时任务
 			Where("is_activity", 2). // 没有运行的
-			Where("task_slice","in",newSls).
+			Where("task_slice", "in", newSls).
 			Get()
 		if err == nil {
 			tasks := &[]domain.Task{}
@@ -67,7 +67,7 @@ func ForFindExecuteTask() {
 	}
 }
 
-func getTaskSlice(taskSlice string)[]interface{}  {
+func getTaskSlice(taskSlice string) []interface{} {
 	deathTaskSlice := strings.Split(taskSlice, ",")
 	newSls := make([]interface{}, len(deathTaskSlice))
 	for i, v := range deathTaskSlice {
@@ -75,4 +75,3 @@ func getTaskSlice(taskSlice string)[]interface{}  {
 	}
 	return newSls
 }
-

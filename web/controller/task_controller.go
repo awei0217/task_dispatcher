@@ -1,23 +1,20 @@
 package controller
 
 import (
-	"task_dispatcher/common"
-	"task_dispatcher/execute"
-	"task_dispatcher/domain"
 	"encoding/json"
 	"github.com/kataras/iris/context"
 	"github.com/kataras/iris/mvc"
 	"strconv"
-	"task_dispatcher/task_manager"
 	"strings"
+	"task_dispatcher/common"
+	"task_dispatcher/domain"
+	"task_dispatcher/execute"
+	"task_dispatcher/task_manager"
 )
 
 type TaskController struct {
 	InterceptController
 }
-
-
-
 
 /**
 跳转到任务列表页面
@@ -90,7 +87,7 @@ func (taskController *TaskController) PostFindTaskList(ctx context.Context) mvc.
 func (taskController *TaskController) PostAddTask(ctx context.Context) mvc.Response {
 	isActivity := 2 // 默认不是运行中
 	taskType, _ := strconv.Atoi(ctx.FormValue("taskType"))
-	if taskType == 2{ // 手动任务
+	if taskType == 2 { // 手动任务
 		isActivity = 3
 	}
 	status, _ := strconv.Atoi(ctx.FormValue("status"))
@@ -114,7 +111,7 @@ func (taskController *TaskController) PostAddTask(ctx context.Context) mvc.Respo
 		ConcurrencyNum: concurrencyNum,
 		CreateUser:     "system",
 		UpdateUser:     "system",
-		IsRegion:		isRegion,
+		IsRegion:       isRegion,
 		RequestMethod:  requestMethod,
 	}
 	_, err := tk.AddTask()
@@ -156,10 +153,10 @@ func (taskController *TaskController) PostUpdateTask(ctx context.Context) mvc.Re
 	tk.Param = ctx.FormValue("param")
 	tk.Cron = cron
 	tk.Description = ctx.FormValue("description")
-	if oldTaskType != taskType && taskType == 1{ // 说明将手动任务改成自动任务
+	if oldTaskType != taskType && taskType == 1 { // 说明将手动任务改成自动任务
 		tk.IsActivity = 2
 	}
-	if taskType == 2 && oldTaskType == 1{ // 说明将自动任务改成手动任务
+	if taskType == 2 && oldTaskType == 1 { // 说明将自动任务改成手动任务
 		tk.IsActivity = 3
 	}
 	tk.TaskType = taskType
@@ -167,7 +164,7 @@ func (taskController *TaskController) PostUpdateTask(ctx context.Context) mvc.Re
 	tk.IsRecordLog = isRecordLog
 	tk.ConcurrencyNum = concurrencyNum
 	tk.IsRegion = isRegion
-	tk.RequestMethod =requestMethod
+	tk.RequestMethod = requestMethod
 	_, err := tk.UpdateTask()
 
 	// 如果任务是定时任务  并且 是运行状态的 并且 是改了cron表达式的
@@ -217,9 +214,9 @@ func (taskController *TaskController) PostDeleteTask(ctx context.Context) mvc.Re
 */
 func (taskController *TaskController) PostExecuteTimingTask(ctx context.Context) mvc.Response {
 	ids := ctx.FormValue("ids")
-	idArray := strings.Split(ids,",")
-	for i:=0;i<len(idArray);i++ {
-		id,_  := strconv.Atoi(idArray[i])
+	idArray := strings.Split(ids, ",")
+	for i := 0; i < len(idArray); i++ {
+		id, _ := strconv.Atoi(idArray[i])
 		tk, err := domain.FindTaskById(id)
 		if err != nil {
 			continue
@@ -247,9 +244,9 @@ func (taskController *TaskController) PostExecuteTimingTask(ctx context.Context)
 */
 func (taskController *TaskController) PostExecuteStopTask(ctx context.Context) mvc.Response {
 	ids := ctx.FormValue("ids")
-	idArray := strings.Split(ids,",")
-	for i:=0;i<len(idArray);i++ {
-		id,_  := strconv.Atoi(idArray[i])
+	idArray := strings.Split(ids, ",")
+	for i := 0; i < len(idArray); i++ {
+		id, _ := strconv.Atoi(idArray[i])
 		tk, err := domain.FindTaskById(id)
 		if err != nil {
 			continue

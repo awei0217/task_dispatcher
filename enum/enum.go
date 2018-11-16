@@ -8,7 +8,7 @@ const (
 
 // 任务分区枚举
 const (
-	TASK_IS_REGION_NO    = 1 // 否
+	TASK_IS_REGION_NO  = 1 // 否
 	TASK_IS_REGION_YES = 2 // 是
 )
 
@@ -21,21 +21,21 @@ const (
 
 // 任务运行停止枚举
 const (
-	TASK_IS_ACTIVITY_YES  = 1  // 运行中
-	TASK_IS_ACTIVITY_NO = 2  // 停止运行
-	TASK_IS_ACTIVITY_NOT = 3  // 默认(手动任务)
+	TASK_IS_ACTIVITY_YES = 1 // 运行中
+	TASK_IS_ACTIVITY_NO  = 2 // 停止运行
+	TASK_IS_ACTIVITY_NOT = 3 // 默认(手动任务)
 )
 
 // 任务启动停止状态枚举
 const (
-	TASK_STATUS_START  = 1 // 启动
-	TASK_STATUS_STOP = 2 // 停止
-	TASK_STATUS_NOT = 3 // 默认 (手动任务)
+	TASK_STATUS_START = 1 // 启动
+	TASK_STATUS_STOP  = 2 // 停止
+	TASK_STATUS_NOT   = 3 // 默认 (手动任务)
 )
 
 // 任务执行记录状态枚举
 const (
-	TASK_EXECUTE_RECORD_FAIL  = 0
+	TASK_EXECUTE_RECORD_FAIL    = 0
 	TASK_EXECUTE_RECORD_SUCCESS = 1
 )
 
@@ -57,7 +57,7 @@ var taskType = map[int]string{
 }
 
 var isRegion = map[int]string{
-	TASK_IS_REGION_NO:     "否",
+	TASK_IS_REGION_NO:  "否",
 	TASK_IS_REGION_YES: "是",
 }
 var taskGroup = map[string]string{
@@ -67,8 +67,8 @@ var taskGroup = map[string]string{
 }
 
 var taskIsActivity = map[int]string{
-	TASK_IS_ACTIVITY_YES:  "是",
-	TASK_IS_ACTIVITY_NO: "否",
+	TASK_IS_ACTIVITY_YES: "是",
+	TASK_IS_ACTIVITY_NO:  "否",
 	TASK_IS_ACTIVITY_NOT: "默认",
 }
 
@@ -78,7 +78,7 @@ var taskIsRecordLog = map[int]string{
 }
 
 var taskExecuteRecordStatus = map[int]string{
-	TASK_EXECUTE_RECORD_FAIL:  "失败",
+	TASK_EXECUTE_RECORD_FAIL:    "失败",
 	TASK_EXECUTE_RECORD_SUCCESS: "成功",
 }
 
@@ -88,9 +88,9 @@ var registerCenterDeath = map[int]string{
 }
 
 var taskStatus = map[int]string{
-	TASK_STATUS_START:  "启动",
-	TASK_STATUS_STOP: "停止",
-	TASK_STATUS_NOT: "默认",
+	TASK_STATUS_START: "启动",
+	TASK_STATUS_STOP:  "停止",
+	TASK_STATUS_NOT:   "默认",
 }
 
 func FindTaskTypeNameByCode(code int) string {
@@ -155,4 +155,3 @@ func FindTaskIsRegionByCode(code int) string {
 	}
 	return ""
 }
-

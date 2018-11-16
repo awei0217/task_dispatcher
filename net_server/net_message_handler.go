@@ -1,12 +1,12 @@
 package net_server
 
 import (
-	"task_dispatcher/common"
-	"task_dispatcher/domain"
-	"task_dispatcher/task_manager"
 	"net"
 	"strconv"
 	"strings"
+	"task_dispatcher/common"
+	"task_dispatcher/domain"
+	"task_dispatcher/task_manager"
 )
 
 func HandlerNetMessage(message string, conn net.Conn) {
@@ -55,20 +55,18 @@ func HandlerNetMessage(message string, conn net.Conn) {
 				task_manager.GetTaskManger().StopTask(t.Id)
 			}
 		}
-		ip := strings.Split(conn.RemoteAddr().String(),":")[0]
-		rcDb,_ := domain.FindRegisterCenterByIp(ip)
-		if rcDb.TaskSliceCollection == ""{
+		ip := strings.Split(conn.RemoteAddr().String(), ":")[0]
+		rcDb, _ := domain.FindRegisterCenterByIp(ip)
+		if rcDb.TaskSliceCollection == "" {
 			rcDb.TaskSliceCollection = strings.Join(newSliceString, ",")
-		}else{
-			rcDb.TaskSliceCollection = rcDb.TaskSliceCollection +","+strings.Join(newSliceString, ",")
+		} else {
+			rcDb.TaskSliceCollection = rcDb.TaskSliceCollection + "," + strings.Join(newSliceString, ",")
 		}
-		_,err:= rcDb.UpdateRegisterCenter()
-		if err ==nil{
-			common.GetLog().Info("给",ip,"任务分配成功")
-		}else{
-			common.GetLog().Error("给",ip,"任务分配失败")
+		_, err := rcDb.UpdateRegisterCenter()
+		if err == nil {
+			common.GetLog().Info("给", ip, "任务分配成功")
+		} else {
+			common.GetLog().Error("给", ip, "任务分配失败")
 		}
 	}
 }
-
-

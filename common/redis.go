@@ -6,7 +6,8 @@ import (
 )
 
 var redisClient *redis.Client
-func init()  {
+
+func init() {
 	/*client := redis.NewClient(&redis.Options{
 		Addr: "127.0.0.1:6369",
 		Password:"",
@@ -20,14 +21,13 @@ func init()  {
 	}*/
 }
 
-
-func GetRedisClient()(*redis.Client){
+func GetRedisClient() *redis.Client {
 
 	return redisClient
 }
 
-func RedisCmd(){
+func RedisCmd() {
 	// key  value  有效期
-	redisClient.Set("ss","ss",1 * time.Second)
+	redisClient.Set("ss", "ss", 1*time.Second)
 	GetLog().Println(redisClient.Get("ss").String())
 }

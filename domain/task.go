@@ -1,15 +1,15 @@
 package domain
 
 import (
-	"task_dispatcher/common"
-	"task_dispatcher/config"
 	"github.com/gohouse/gorose"
 	"github.com/goinggo/mapstructure"
 	"github.com/kataras/iris/core/errors"
 	"math/rand"
 	"strconv"
-	"time"
+	"task_dispatcher/common"
+	"task_dispatcher/config"
 	"task_dispatcher/enum"
+	"time"
 )
 
 const (
@@ -31,9 +31,9 @@ type Task struct {
 	Description    string `json:"description"`    // 任务描述
 	Url            string `json:"url"`            //目标地址
 	ConcurrencyNum int    `json:"concurrencyNum"` // 并发数量（一次启多少协成执行）
-	Status 		  int `json:"status"`             // 任务状态
+	Status         int    `json:"status"`         // 任务状态
 	IsActivity     int    `json:"isActivity"`     //是否激活 0 否 1 是
-	IsRecordLog  int    `json:"isRecordLog"`     //是否记录日志 0 否 1 是
+	IsRecordLog    int    `json:"isRecordLog"`    //是否记录日志 0 否 1 是
 	Param          string `json:"param"`          //传递给任务的参数 json串
 	TaskType       int    `json:"taskType"`       //任务分类 1 定时任务 2 一次性任务
 	Cron           string `json:"cron"`           // 定时任务表达式
@@ -41,16 +41,16 @@ type Task struct {
 	UpdateTime     string `json:"updateTime"`
 	CreateUser     string `json:"createUser"`
 	UpdateUser     string `json:"updateUser"`
-	Mail           string `json:"mail"` //邮箱
-	IsRegion	   int    `json:"isRegion"` //是否分区 1 否 2 是
-	RequestMethod  int 	  `json:"requestMethod"` // 请求方式
+	Mail           string `json:"mail"`          //邮箱
+	IsRegion       int    `json:"isRegion"`      //是否分区 1 否 2 是
+	RequestMethod  int    `json:"requestMethod"` // 请求方式
 
-	GroupNameUI    string `json:"groupNameUI"`    //页面回显时使用  分组名称
-	TaskTypeNameUI string `json:"taskTypeNameUI"` //页面回显时使用 任务类型名称
-	TaskIsActivityNameUI string `json:"taskIsActivityNameUI"` //页面回显时使用 任务是否运行
+	GroupNameUI           string `json:"groupNameUI"`           //页面回显时使用  分组名称
+	TaskTypeNameUI        string `json:"taskTypeNameUI"`        //页面回显时使用 任务类型名称
+	TaskIsActivityNameUI  string `json:"taskIsActivityNameUI"`  //页面回显时使用 任务是否运行
 	TaskIsRecordLogNameUI string `json:"taskIsRecordLogNameUI"` //页面回显时使用 任务是否运行
-	StatusNameUI string `json:"statusNameUI"` //任务启动 停止状态
-	IsRegionNameUI string `json:"isRegionNameUI"`
+	StatusNameUI          string `json:"statusNameUI"`          //任务启动 停止状态
+	IsRegionNameUI        string `json:"isRegionNameUI"`
 }
 
 /**
@@ -75,7 +75,7 @@ func (task *Task) AddTask() (int64, error) {
 		"url":             task.Url,
 		"concurrency_num": task.ConcurrencyNum,
 		"is_activity":     task.IsActivity,
-		"is_record_log":     task.IsRecordLog,
+		"is_record_log":   task.IsRecordLog,
 		"param":           task.Param,
 		"task_type":       task.TaskType,
 		"cron":            task.Cron,
@@ -84,8 +84,8 @@ func (task *Task) AddTask() (int64, error) {
 		"create_user":     task.CreateUser,
 		"update_user":     task.UpdateUser,
 		"mail":            task.Mail,
-		"is_region":	   task.IsRegion,
-		"request_method":   task.RequestMethod,
+		"is_region":       task.IsRegion,
+		"request_method":  task.RequestMethod,
 	}).Insert()
 	return res, err
 }
@@ -104,16 +104,16 @@ func (task *Task) UpdateTask() (int64, error) {
 		"url":             task.Url,
 		"concurrency_num": task.ConcurrencyNum,
 		"is_activity":     task.IsActivity,
-		"status":     task.Status,
-		"is_record_log":     task.IsRecordLog,
+		"status":          task.Status,
+		"is_record_log":   task.IsRecordLog,
 		"param":           task.Param,
 		"cron":            task.Cron,
 		"update_time":     task.UpdateTime,
 		"update_user":     task.UpdateUser,
 		"mail":            task.Mail,
-		"task_type":            task.TaskType,
-		"is_region":		task.IsRegion,
-		"request_method":   task.RequestMethod,
+		"task_type":       task.TaskType,
+		"is_region":       task.IsRegion,
+		"request_method":  task.RequestMethod,
 	}).Update()
 	return res, err
 }
@@ -123,7 +123,8 @@ func (task *Task) UpdateTask() (int64, error) {
 */
 func FindAllTask(task *Task) (*[]Task, error) {
 	tk := config.Conn.Table("task")
-	res, err := tk.Fields(TASK_SELECT_FIELD).Where("is_delete",0).Get()
+	taskWhereCondition(tk, task)
+	res, err := tk.Fields(TASK_SELECT_FIELD).Get()
 	tasks := &[]Task{}
 	err1 := mapstructure.Decode(res, tasks)
 	if err1 != nil {
@@ -139,10 +140,11 @@ func FindAllTask(task *Task) (*[]Task, error) {
 func FindTaskByPage(page *common.Page, task *Task) (*common.Page, error) {
 	tk := config.Conn.Table("task")
 	//查询数据
-	res, err1 := tk.Fields(TASK_SELECT_FIELD).Where("is_delete",0).Offset((page.Page - 1) * page.Limit).Limit(page.Limit).Get()
+	taskWhereCondition(tk, task)
+	res, err1 := tk.Fields(TASK_SELECT_FIELD).Offset((page.Page - 1) * page.Limit).Limit(page.Limit).Get()
 	//查询总数
 	tkCount := config.Conn.Table("task")
-	count, err2 := tkCount.Where("is_delete",0).Count()
+	count, err2 := tkCount.Where("is_delete", 0).Count()
 	if err1 != nil {
 		common.GetLog().Errorln("根据条查询任务记录异常", err1)
 		return page, err1
@@ -153,7 +155,7 @@ func FindTaskByPage(page *common.Page, task *Task) (*common.Page, error) {
 	}
 	tasksResult := &[]Task{}
 	mapstructure.Decode(res, tasksResult)
-	for index,tr:= range *tasksResult{
+	for index, tr := range *tasksResult {
 		(*tasksResult)[index].GroupNameUI = enum.FindTaskGroupNameByCode(tr.GroupNo)
 		(*tasksResult)[index].TaskTypeNameUI = enum.FindTaskTypeNameByCode(tr.TaskType)
 		(*tasksResult)[index].TaskIsActivityNameUI = enum.FindTaskIsActivityNameByCode(tr.IsActivity)
@@ -176,19 +178,19 @@ func FindByTaskSlice(taskSlice []interface{}) (*[]Task, error) {
 	mapstructure.Decode(res, tasks)
 	return tasks, err
 }
-func taskWhereCondition(tableName *gorose.Session, task *Task) {
-	tableName.Where("is_delete", 0)
+func taskWhereCondition(session *gorose.Session, task *Task) {
+	session.Where("is_delete", 0)
 	if task.Name != "" {
-		tableName.Where("name", task.Name)
+		session.Where("name", task.Name)
 	}
 	if task.TaskNo != "" {
-		tableName.Where("task_no", task.TaskNo)
+		session.Where("task_no", task.TaskNo)
 	}
 	if task.GroupNo != "" {
-		tableName.Where("group_no", task.GroupNo)
+		session.Where("group_no", task.GroupNo)
 	}
 	if task.Id != 0 {
-		tableName.Where("id", task.Id)
+		session.Where("id", task.Id)
 	}
 }
 
@@ -200,8 +202,8 @@ func FindTaskById(id int) (*Task, error) {
 	}
 	task := &[]Task{}
 	// 将map转化成struct
-	if res == nil{
-		return nil,nil
+	if res == nil {
+		return nil, nil
 	}
 	mapstructure.Decode(res, task)
 	return &((*task)[0]), err
@@ -220,59 +222,59 @@ func FindTaskByUrl(url string) (*Task, error) {
 
 	return &((*task)[0]), err
 }
+
 /**
-	删除任务
- */
-func DeleteTask(id int)(int64,error){
-	res, err :=config.Conn.Table("task").Where("id",id).Delete()
-	if err != nil{
-		return 0,err
+删除任务
+*/
+func DeleteTask(id int) (int64, error) {
+	res, err := config.Conn.Table("task").Where("id", id).Delete()
+	if err != nil {
+		return 0, err
 	}
-	return res,nil
+	return res, nil
 }
+
 /**
-	统计总任务数量
- */
-func CountTask()(int64, error){
+统计总任务数量
+*/
+func CountTask() (int64, error) {
 	tkCount := config.Conn.Table("task")
 	count, err := tkCount.Where().Count()
-	return count,err
+	return count, err
 }
 
 /**
-	统计执行中务数量
- */
-func CountExecutingTask()(int64, error){
+统计执行中务数量
+*/
+func CountExecutingTask() (int64, error) {
 	tkCount := config.Conn.Table("task")
-	count, err := tkCount.Where("is_activity",1).Count()
-	return count,err
+	count, err := tkCount.Where("is_activity", 1).Count()
+	return count, err
 }
 
 /**
-	统计定时任务数量
- */
-func CountCronTask()(int64, error){
+统计定时任务数量
+*/
+func CountCronTask() (int64, error) {
 	tkCount := config.Conn.Table("task")
-	count, err := tkCount.Where("task_type",1).Count()
-	return count,err
+	count, err := tkCount.Where("task_type", 1).Count()
+	return count, err
 }
+
 /**
-	统计普通任务数量
- */
-func CountOneTask()(int64, error){
+统计普通任务数量
+*/
+func CountOneTask() (int64, error) {
 	tkCount := config.Conn.Table("task")
-	count, err := tkCount.Where("task_type",2).Count()
-	return count,err
+	count, err := tkCount.Where("task_type", 2).Count()
+	return count, err
 }
+
 /**
-	跟新任务为启动未运行的状态
- */
-func UpdateTaskByTaskSlice( taskSlice []interface{})  {
-	config.Conn.Table("task").Where("task_slice","in",taskSlice).Where("task_type",1).Data(map[string]interface{}{
-		"is_activity":2,
+跟新任务为启动未运行的状态
+*/
+func UpdateTaskByTaskSlice(taskSlice []interface{}) {
+	config.Conn.Table("task").Where("task_slice", "in", taskSlice).Where("task_type", 1).Data(map[string]interface{}{
+		"is_activity": 2,
 	}).Update()
 }
-
-
-
-
