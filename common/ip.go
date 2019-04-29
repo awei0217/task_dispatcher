@@ -16,7 +16,7 @@ func GetIp() string {
 	for _, ads := range address {
 		// 检查ip地址判断是否回环地址
 		if ipNet, ok := ads.(*net.IPNet); ok && !ipNet.IP.IsLoopback() {
-			if ipNet.IP.To4() != nil && (strings.HasSuffix(ads.String(), "28") || strings.HasSuffix(ads.String(), "22")) { //子网掩码为22
+			if ipNet.IP.To4() != nil && (strings.HasSuffix(ads.String(), "28") || strings.HasSuffix(ads.String(), "20")) { //子网掩码为22
 				tempAds = ipNet.IP.String()
 			}
 		}

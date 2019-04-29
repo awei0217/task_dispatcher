@@ -13,6 +13,10 @@ File Encoding         : 65001
 Date: 2018-07-30 13:42:24
 */
 
+CREATE DATABASE IF NOT EXISTS scheduler DEFAULT CHARSET utf8 COLLATE utf8_general_ci;
+
+use scheduler;
+
 SET FOREIGN_KEY_CHECKS=0;
 
 -- ----------------------------
@@ -60,6 +64,7 @@ CREATE TABLE `task` (
   `concurrency_num` int(11) DEFAULT NULL,
   `status` int(11) NOT NULL DEFAULT '1' COMMENT '1 启动 2停止',
   `is_activity` int(11) DEFAULT NULL COMMENT '0 否 1 是',
+  `is_region` int(11) DEFAULT NULL COMMENT '0 否 1 是',
   `is_record_log` int(11) DEFAULT '0' COMMENT '是否记录日志 0 否 1 是',
   `param` varchar(255) DEFAULT NULL,
   `task_type` int(11) DEFAULT NULL,
@@ -69,7 +74,7 @@ CREATE TABLE `task` (
   `create_user` varchar(20) DEFAULT NULL,
   `update_user` varchar(20) DEFAULT NULL,
   `mail` varchar(255) DEFAULT NULL,
-  `request_methods` int(11) DEFAULT '1' COMMENT '1 POST 2 GET',
+  `request_method` int(11) DEFAULT '1' COMMENT '1 POST 2 GET',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=863867504 DEFAULT CHARSET=utf8;
 
