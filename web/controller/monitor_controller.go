@@ -73,7 +73,14 @@ func (monitorController *MonitorController) PostFindPerformanceMonitorInfo(ctx c
 	if startTime != "" {
 		pms, err := domain.FindPerformanceMonitorByIpAndTime(ip, startTime, endTime)
 		if err != nil {
-			log.Println("查询监控信息异常")
+			log.Println("查询监控信息异常", err)
+		}
+		if pms == nil {
+			res, _ := json.Marshal(result)
+			return mvc.Response{
+				ContentType: "application/json;charset=UTF-8",
+				Text:        string(res),
+			}
 		}
 		length := len(*pms)
 		updateTimes := make([]string, length, length)
@@ -91,7 +98,14 @@ func (monitorController *MonitorController) PostFindPerformanceMonitorInfo(ctx c
 	} else {
 		pms, err := domain.FindPerformanceMonitor(ip, limit)
 		if err != nil {
-			log.Println("查询监控信息异常")
+			log.Println("查询监控信息异常", err)
+		}
+		if pms == nil {
+			res, _ := json.Marshal(result)
+			return mvc.Response{
+				ContentType: "application/json;charset=UTF-8",
+				Text:        string(res),
+			}
 		}
 		length := len(*pms)
 
