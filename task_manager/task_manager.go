@@ -2,7 +2,7 @@ package task_manager
 
 import (
 	"errors"
-	"github.com/shotdog/quartz"
+	"github.com/Maplecms/quartz"
 	"task_dispatcher/common"
 	"task_dispatcher/domain"
 	"task_dispatcher/execute"

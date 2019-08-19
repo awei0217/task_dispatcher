@@ -7,12 +7,12 @@ import (
 )
 
 var dbConfig = &gorose.DbConfigSingle{
-	Driver:          "mysql",                                                // driver: mysql/sqlite/oracle/mssql/postgres
-	EnableQueryLog:  true,                                                   // if enable sql logs
-	SetMaxOpenConns: 5,                                                      // connection pool of max Open connections, default zero
-	SetMaxIdleConns: 1,                                                      // connection pool of max sleep connections
-	Prefix:          "",                                                     // prefix of table
-	Dsn:             "root:root@tcp(127.0.0.1:3306)/scheduler?charset=utf8", // db dsn
+	Driver:          "mysql",                                         // driver: mysql/sqlite/oracle/mssql/postgres
+	EnableQueryLog:  true,                                            // if enable sql logs
+	SetMaxOpenConns: 5,                                               // connection pool of max Open connections, default zero
+	SetMaxIdleConns: 1,                                               // connection pool of max sleep connections
+	Prefix:          "",                                              // prefix of table
+	Dsn:             "root:root@tcp(ip:3306)/scheduler?charset=utf8", // db dsn
 }
 var Conn gorose.Connection
 
